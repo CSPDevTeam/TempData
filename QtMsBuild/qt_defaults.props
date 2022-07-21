@@ -121,6 +121,7 @@
     <SubFolder/>
     <SubFolderImports/>
   </PropertyGroup>
+  
   <Import Project="$(QtImports)"/>
 
 </Project>
