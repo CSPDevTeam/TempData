@@ -90,10 +90,14 @@
       <QtTranslation>
         <InputFiles
           >$(QtTranslationInput)</InputFiles>
-        <LUpdate
+        <LUpdate Condition="'$(ApplicationType)' == 'Linux'"
           >$(QtToolsPath)/lupdate</LUpdate>
-        <LRelease
+        <LRelease Condition="'$(ApplicationType)' == 'Linux'"
           >$(QtToolsPath)/lrelease</LRelease>
+        <LUpdate Condition="'$(ApplicationType)' != 'Linux'"
+          >$(QtToolsPath)/lupdate.exe</LUpdate>
+        <LRelease Condition="'$(ApplicationType)' != 'Linux'"
+          >$(QtToolsPath)/lrelease.exe</LRelease>
         <TsFile
           >%(Identity)</TsFile>
         <QmFile
@@ -395,6 +399,7 @@
       <Cmd>$(Cmd.Trim())</Cmd>
     </PropertyGroup>
     <HostExec
+      Condition="Exists(@(Options->'%(CmdExec)', ''))"
       Message="%(QtTranslationUpdate.UpdateDescription)"
       Command="$(Cmd)"
       Inputs="@(Options->'%(InputListFile)');@(Options->'%(InputFiles)')"
@@ -402,6 +407,9 @@
       RemoteTarget="$(ResolvedRemoteTarget)"
       RemoteProjectDir="$(_ResolvedRemoteProjectDir)">
     </HostExec>
+    <Warning
+      Condition="!Exists(@(Options->'%(CmdExec)', ''))"
+      File="%(QtTranslationUpdate.Identity)" Text="'lupdate' not found; skipping" />
 
     <!--
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -556,6 +564,7 @@
       <Cmd>$(Cmd.Trim())</Cmd>
     </PropertyGroup>
     <HostExec
+      Condition="Exists(@(Options->'%(CmdExec)', ''))"
       Message="%(QtTranslationRelease.ReleaseDescription)"
       Command="$(Cmd)"
       Inputs="@(Options->'%(InputFile)')"
@@ -563,6 +572,9 @@
       RemoteTarget="$(ResolvedRemoteTarget)"
       RemoteProjectDir="$(_ResolvedRemoteProjectDir)">
     </HostExec>
+    <Warning
+      Condition="!Exists(@(Options->'%(CmdExec)', ''))"
+      File="%(QtTranslationRelease.Identity)" Text="'lrelease' not found; skipping" />
 
     <!--
     ///////////////////////////////////////////////////////////////////////////////////////////////
